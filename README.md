@@ -76,9 +76,7 @@ L'OI a renseigné les champs :
 Le champs statusChangeReason = Creating
 
 #### Complétude : statut ACKNOWLEDGED
-La signalisation porte obligatoirement une pièce jointe illustrant la malfaçon.
-Pour les malfaçons de type AmontPm, Pm, PmPbo, Pbo, cette pièce jointe est obligatoirement une photo.
-Pour les types CcfCable et CcfPto, la pièce jointe peut être une photo ou un plan.
+La signalisation porte obligatoirement une photo jointe illustrant la malfaçon.
 Le compteur de délai max de reprise/résolution OC (totalResolutionOcDuration) démarre dès ce statut (ex 30 jours).
 Le champs statusChangeReason = Acknowledged
 
@@ -101,9 +99,15 @@ Le champ statusChangeDetails est obligatoire.
 
 #### ACKNOWLEDGED → IN_PROGRESS: Le ticket est en cours de résolution
 
+Ce changement est soit à l'initiaitive de l'OC pour porter la résolution côté OC :
 Ce changement est effectué par  l'OC et il n'est plus possible de passer le ticket à REJECTED une fois ce changement de statut effectué.
-
 Le champ statusChangeReason doit être renseigné avec Chargeable_Accepted.
+
+Ou il peut être à l'initiaitive de l'OI suite au dépassement du délai de résolution OC :
+Ce changement de status ne peut être effectué que par l'OI lorsque le délai de résolution par l'OC est dépassé (totalResolutionOcDuration > délai fixé).
+L'OI doit alors :
+- modifier le champs resolutionOwner qui doit être renseigné à "OI"
+- Le champ statusChangeReason doit être renseigné avec RESOLUTION_DATE_EXPIRED
 
 #### IN_PROGRESS → IN_PROGRESS: l'OI prend en charge la résolution du ticket suite dépassement délai OC
 Ce changement de status ne peut être effectué que par l'OI lorsque le délai de résolution par l'OC est dépassé (totalResolutionOcDuration > délai fixé).
@@ -172,6 +176,9 @@ Le champ statusChangeDetails doit être renseigné avec la raison de l'annulatio
 OTHER :  Autre raison
 Le champ statusChangeDetails doit être renseigné avec la raison de l'annulation.
 
+DELAY_RESOLUTION_OI_EXPIRED :  ticket dont le délai maximum de reprise OI a été dépassé
+Ce changement de statut est effectué automatiquement si l'état= In_Progress + ResolutionOwner=OI + le délai maximum de reprise OI a été atteint
+
 #### RESOLVED → CLOSED: cloture du ticket.
 
 Ce changement de status est effectué par l'OI :
@@ -216,6 +223,10 @@ Une fois ce délai dépassé, la résolution est considérée comme automatiquem
 Est calculé lors d'une question posée par l'OC à l'OI (passage du ticket à Pending)
 L'OI a alors un délai fixé (maxPendingDate) pour apporter la réponse à l'OC qui est en attente de celle-ci. Si cette date est dépassée, le ticket passe alors automatiquement en Resolved.
 
+### Délai max de reprise OI :
+Permet de passer purger (en les passant à Cancelled) les tickets à l'état In_Progress, avec ResolutionOwner=OI et dont la date de création est > à "x", x étant ce délai max de reprise OI.
+Ce délai permet d'éviter de garder ouverts des tickets inutilement chez les OI&OC.
+
 ### Délai max de dépôt entre les tickets auprès d’un même OC sur un même élément d’infra (Gestion des compléments de signalisations) :
 Il ne s'agit pas ici d'un compteur, mais plutôt d'une règle de gestion.
 Afin d’optimiser les interventions terrains, l’OI doit veiller à signaler l’ensemble des malfaçons auprès d’un même OC sur un « même élément d’infra* » dans un « délai max de dépôt entre les tickets ».
@@ -245,9 +256,7 @@ L'OI a renseigné les champs :
 Le champs statusChangeReason = Creating
 
 #### Complétude : statut ACKNOWLEDGED
-Une signalisation porte obligatoirement une pièce jointe illustrant la malfaçon.
-Pour les malfaçons de type AmontPm, Pm, PmPbo, Pbo, cette pièce jointe est obligatoirement une photo.
-Pour les types CcfCable et CcfPto, la pièce jointe peut être une photo ou un plan.
+Une signalisation porte obligatoirement une photo illustrant la malfaçon.
 Le champs statusChangeReason = Acknowledged
 
 Possibilités de changement de status:
