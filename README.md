@@ -119,7 +119,7 @@ L'OI doit alors :
 #### IN_PROGRESS → PENDING: demande OC d'information complémentaire à l'OI
 Ce changement de statut ne peut être effectué que par l'OC sur une malfaçon dont le ResolutionOwner='OC'.
 Cette transition a pour effet de geler le compteur totalResolutionOcDuration.
-L'OI a alors un délai maximum pour apporter sa réponse : maxPendingDate
+L'OI a alors un délai maximum pour apporter sa réponse : pendingDueDate
 
 Le champ statusChangeReason doit être renseigné avec  :
 
@@ -134,7 +134,7 @@ OTHER : Autre information attendue
 L'OC doit fournir le détail des informations complémentaires attendues dans le champs statusChangeDetails.
 
 #### PENDING → IN_PROGRESS: réponse OI à une demande d'information complémentaire OC
-Ce changement de status ne peut être effectué que par l'OI et dans un délai inférieur au maxPendingDate.
+Ce changement de status ne peut être effectué que par l'OI et dans un délai inférieur au pendingDueDate.
 Cette transition a pour effet de dégeler le compteur totalResolutionOcDuration.
 
 Le champ statusChangeReason doit être renseigné avec la valeur INFORMATION_GIVEN
@@ -145,14 +145,14 @@ L'OI fournit la liste des informations complémentaires attendues:
 - et/ou un attachment
 
 #### PENDING → RESOLVED: absence de réponse OI dans les délais
-Ce changement de status ne peut être effectué que par l'OI (automatiquement) lorsque le délai de réponse OI a été dépassé (maxPendingDate).
+Ce changement de status ne peut être effectué que par l'OI (automatiquement) lorsque le délai de réponse OI a été dépassé (pendingDueDate).
 En absence de réponse OI, le ticket passe automatiquement en Resolved avec le champ statusChangeReason renseigné à  DELAY_ANSWER_EXPIRED
 
 #### IN_PROGRESS → RESOLVED: résolution du ticket
 
 Sur un ticket dont le champs resolutionOwner='OI', ce changement de status ne peut être effectué que par l'OI. Le champ statusChangeReason doit être renseigné avec RESOLVED_OI.
 
-Sur un ticket dont le champs resolutionOwner='OC', ce changement de status ne peut être effectué que par l'OC. Le champ statusChangeReason doit être renseigné avec RESOLVED_OC. Le compteur de délai de résolution OC (totalResolutionOcDuration) se gèle et le délai max de validation OI (maxValidationDate) est alors calculé.
+Sur un ticket dont le champs resolutionOwner='OC', ce changement de status ne peut être effectué que par l'OC. Le champ statusChangeReason doit être renseigné avec RESOLVED_OC. Le compteur de délai de résolution OC (totalResolutionOcDuration) se gèle et le délai max de validation OI (validationDueDate) est alors calculé.
 
 Sur ces statusChangeReason = Resolved_OI ou Resolved_OI :
 - le champs resolutionDate doit être renseigné
@@ -221,7 +221,7 @@ Une fois ce délai dépassé, la résolution est considérée comme automatiquem
 
 ### Délai max de réponse OI :
 Est calculé lors d'une question posée par l'OC à l'OI (passage du ticket à Pending)
-L'OI a alors un délai fixé (maxPendingDate) pour apporter la réponse à l'OC qui est en attente de celle-ci. Si cette date est dépassée, le ticket passe alors automatiquement en Resolved.
+L'OI a alors un délai fixé (pendingDueDate) pour apporter la réponse à l'OC qui est en attente de celle-ci. Si cette date est dépassée, le ticket passe alors automatiquement en Resolved.
 
 ### Délai max de reprise OI :
 Permet de passer purger (en les passant à Cancelled) les tickets à l'état In_Progress, avec ResolutionOwner=OI et dont la date de création est > à "x", x étant ce délai max de reprise OI.
@@ -521,7 +521,7 @@ sequenceDiagram
   OC->>OI: Notif (status = « IN PROGRESS », statusChangeReason= Chargeable_Accepted)
   OC->>OI: Notif (status = PENDING, statusChangeReason=Lack_Of_Information)
   OI->>OI: Gel du compteur du délai de reprise OC
-  OI->>OI: Démarrage du compteur de réponse OI MaxPendingDate
+  OI->>OI: Démarrage du compteur de réponse OI pendingDueDate
   OI->>OI: Ajout d'une PJ et/ou Note
   OI->>OC: Notif Note ET/OU Attachment
   OI->>OC: Notif (status = « IN PROGRESS », statusChangeReason=« Information_Given»)
