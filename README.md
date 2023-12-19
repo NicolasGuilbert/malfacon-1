@@ -361,8 +361,7 @@ sequenceDiagram
   OI->>OI: Gel du compteur du délai de reprise OC
   OI->>OI: Démarrage du compteur de validation OI
   OI->>OI: Contrôle de surface
-  OI->>OI: Délai max du compteur de validation OI atteint. Cloture du ticket  (status=CLOSED, statusChangeReason = DELAY_VALIDATION_EXPIRED
-)
+  OI->>OI: Délai max du compteur de validation OI atteint. Cloture du ticket  (status=CLOSED, statusChangeReason = DELAY_VALIDATION_EXPIRED)
   OI->>OC: Notif (status = « CLOSED », statusChangeReason = DELAY_VALIDATION_EXPIRED
 ```
 
